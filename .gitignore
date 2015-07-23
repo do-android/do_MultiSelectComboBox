@@ -1,0 +1,9 @@
+*.class
+*.apk
+bin/
+gen/
+.settings/
+proguard/
+*.classpath
+/doExt_do_MultiSelectComboBox/do_build.xml
+/doExt_do_MultiSelectComboBox/libs/docore.jar
