@@ -110,6 +110,19 @@
       }
     },
     {
+      "ID": "text",
+      "Name": "文本显示内容",
+      "Type": "String",
+      "DefaultValue": "",
+      "EditType": "1",
+      "Group": "",
+      "Description": "",
+      "Design": {
+        "Type": "Text",
+        "Data": []
+      }
+    },
+    {
       "ID": "textFlag",
       "Name": "字体标示",
       "Type": "String",

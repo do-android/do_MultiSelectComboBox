@@ -18,6 +18,7 @@ public abstract class do_MultiSelectComboBox_MAbstract extends DoUIModule{
 	public void onInit() throws Exception{
         super.onInit();
         //注册属性
+		this.registProperty(new DoProperty("text", PropertyDataType.String, "", false));
 		this.registProperty(new DoProperty("fontColor", PropertyDataType.String, "000000FF", false));
 		this.registProperty(new DoProperty("fontSize", PropertyDataType.Number, "17", false));
 		this.registProperty(new DoProperty("fontStyle", PropertyDataType.String, "normal", false));
