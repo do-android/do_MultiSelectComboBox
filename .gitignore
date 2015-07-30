@@ -7,3 +7,4 @@ proguard/
 *.classpath
 /doExt_do_MultiSelectComboBox/do_build.xml
 /doExt_do_MultiSelectComboBox/libs/docore.jar
+/doExt_do_MultiSelectComboBox/do_MultiSelectComboBox.zip
