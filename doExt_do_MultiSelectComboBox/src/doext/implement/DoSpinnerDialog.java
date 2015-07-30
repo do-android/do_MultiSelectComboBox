@@ -1,14 +1,12 @@
 package doext.implement;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
+import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -26,25 +24,25 @@ import android.widget.TextView;
 public class DoSpinnerDialog extends Dialog implements OnClickListener, OnCancelListener {
 
 	private ListView listView;
-	private HashMap<Integer, Boolean> itemStatus;
+	private SparseBooleanArray itemStatus;
 
-	private HashMap<Integer, Boolean> tempItemStatus;
+	private SparseBooleanArray tempItemStatus;
 
 	private OnClickCancelListener listener;
 
 	public interface OnClickCancelListener {
-		void clickCancel(HashMap<Integer, Boolean> itemStatus);
+		void clickCancel(SparseBooleanArray itemStatus);
 	}
 
 	public void setOnClickCancelListener(OnClickCancelListener _listener) {
 		this.listener = _listener;
 	}
 
-	public DoSpinnerDialog(Context context, HashMap<Integer, Boolean> _itemStatus) {
+	public DoSpinnerDialog(Context context, SparseBooleanArray _itemStatus) {
 		super(context);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.itemStatus = _itemStatus;
-		tempItemStatus = new HashMap<Integer, Boolean>();
+		tempItemStatus = new SparseBooleanArray();
 
 		LinearLayout layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
@@ -82,8 +80,7 @@ public class DoSpinnerDialog extends Dialog implements OnClickListener, OnCancel
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Boolean isCheck = tempItemStatus.get(position);
-				if (isCheck == null) {
+				if (tempItemStatus.indexOfKey(position) < 0) {
 					tempItemStatus.put(position, !itemStatus.get(position));
 				} else {
 					tempItemStatus.put(position, !tempItemStatus.get(position));
@@ -96,8 +93,9 @@ public class DoSpinnerDialog extends Dialog implements OnClickListener, OnCancel
 	public void onClick(View v) {
 		this.cancel();
 		if (listener != null) {
-			for (Entry<Integer, Boolean> _entry : tempItemStatus.entrySet()) {
-				itemStatus.put(_entry.getKey(), _entry.getValue());
+			for (int i = 0; i < tempItemStatus.size(); i++) {
+				int _key = tempItemStatus.keyAt(i);
+				itemStatus.put(_key, tempItemStatus.get(_key));
 			}
 			tempItemStatus.clear();
 			listener.clickCancel(itemStatus);
@@ -109,9 +107,13 @@ public class DoSpinnerDialog extends Dialog implements OnClickListener, OnCancel
 		return (int) (pxValue / scale + 0.5f);
 	}
 
-	public void setSelection(HashMap<Integer, Boolean> itemStatus) {
-		for (Entry<Integer, Boolean> _entry : itemStatus.entrySet()) {
-			listView.setItemChecked(_entry.getKey(), _entry.getValue());
+	public void setSelection(SparseBooleanArray _itemStatus, boolean _isFire) {
+		for (int i = 0; i < _itemStatus.size(); i++) {
+			int _key = _itemStatus.keyAt(i);
+			listView.setItemChecked(_key, _itemStatus.get(_key));
+		}
+		if (listener != null && _isFire) {
+			listener.clickCancel(_itemStatus);
 		}
 	}
 
@@ -121,9 +123,9 @@ public class DoSpinnerDialog extends Dialog implements OnClickListener, OnCancel
 			tempItemStatus.clear();
 		}
 	}
-	
-	public void setBgColor(int color){
-		if(listView != null){
+
+	public void setBgColor(int color) {
+		if (listView != null) {
 			listView.setBackgroundColor(color);
 		}
 	}

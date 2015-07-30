@@ -1,14 +1,13 @@
 package doext.implement;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,7 +41,7 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	private String fontSize;
 	private String textFlag;
 
-	private HashMap<Integer, Boolean> itemStatus;
+	private SparseBooleanArray itemStatus;
 
 	private DoSpinnerDialog spinnerDialog;
 
@@ -68,7 +67,7 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	@Override
 	public void loadView(DoUIModule _doUIModule) throws Exception {
 		this.model = (do_MultiSelectComboBox_MAbstract) _doUIModule;
-		itemStatus = new HashMap<Integer, Boolean>();
+		itemStatus = new SparseBooleanArray();
 		spinnerDialog = new DoSpinnerDialog(context, itemStatus);
 		spinnerDialog.setOnClickCancelListener(this);
 		this.setOnClickListener(this);
@@ -124,13 +123,15 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 		if (_changedValues.containsKey("items")) {
 			String _items = _changedValues.get("items");
 			String[] _data = _items.split(",");
-			for (int i = 0; i < _data.length; i++) {
-				itemStatus.put(i, false);
+			if (itemStatus == null || itemStatus.size() == 0) {
+				for (int i = 0; i < _data.length; i++) {
+					itemStatus.put(i, false);
+				}
 			}
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_list_item_multiple_choice, _data);
 			spinnerDialog.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
-			spinnerDialog.setSelection(itemStatus);
+			spinnerDialog.setSelection(itemStatus, false);
 		}
 
 		if (_changedValues.containsKey("indexs")) {
@@ -142,7 +143,7 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 						itemStatus.put(_index, true);
 					}
 				}
-				spinnerDialog.setSelection(itemStatus);
+				spinnerDialog.setSelection(itemStatus, true);
 			}
 		}
 	}
@@ -233,15 +234,16 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	}
 
 	@Override
-	public void clickCancel(HashMap<Integer, Boolean> _itemStatus) {
+	public void clickCancel(SparseBooleanArray _itemStatus) {
 		DoInvokeResult _result = new DoInvokeResult(model.getUniqueKey());
 		JSONArray _array = new JSONArray();
 		StringBuffer _sb = new StringBuffer();
-		for (Entry<Integer, Boolean> _entry : _itemStatus.entrySet()) {
-			if (_entry.getValue()) {
-				int _selectIndex = _entry.getKey();
-				_sb.append(_selectIndex + ",");
-				_array.put(_selectIndex);
+		for (int i = 0; i < itemStatus.size(); i++) {
+			int _key = itemStatus.keyAt(i);
+			boolean _value = itemStatus.get(_key);
+			if (_value) {
+				_sb.append(_key + ",");
+				_array.put(_key);
 			}
 		}
 		_result.setResultArray(_array);
@@ -257,7 +259,7 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	public void onClick(View v) {
 		if (spinnerDialog != null) {
 			spinnerDialog.show();
-			spinnerDialog.setSelection(itemStatus);
+			spinnerDialog.setSelection(itemStatus, false);
 			try {
 				DoProperty _bgColor = model.getProperty("bgColor");
 				if (_bgColor != null) {
