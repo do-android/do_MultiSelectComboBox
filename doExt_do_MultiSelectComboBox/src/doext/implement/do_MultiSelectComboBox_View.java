@@ -131,10 +131,11 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_list_item_multiple_choice, _data);
 			spinnerDialog.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
-			spinnerDialog.setSelection(itemStatus, false);
+			spinnerDialog.setSelection(itemStatus, true);
 		}
 
 		if (_changedValues.containsKey("indexs")) {
+			itemStatus.clear();
 			String[] _indexs = _changedValues.get("indexs").split(",");
 			if (_indexs != null && _indexs.length > 0) {
 				for (int i = 0; i < _indexs.length; i++) {
