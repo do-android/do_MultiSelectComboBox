@@ -135,7 +135,12 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 		}
 
 		if (_changedValues.containsKey("indexs")) {
-			itemStatus.clear();
+			if (itemStatus != null && itemStatus.size() > 0) {
+				for (int i = 0; i < itemStatus.size(); i++) {
+					itemStatus.put(i, false);
+				}
+			}
+			
 			String[] _indexs = _changedValues.get("indexs").split(",");
 			if (_indexs != null && _indexs.length > 0) {
 				for (int i = 0; i < _indexs.length; i++) {
