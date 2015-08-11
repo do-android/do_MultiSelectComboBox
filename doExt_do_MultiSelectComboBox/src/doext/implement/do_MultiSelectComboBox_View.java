@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import core.DoServiceContainer;
 import core.helper.DoTextHelper;
 import core.helper.DoUIModuleHelper;
 import core.interfaces.DoIScriptEngine;
@@ -123,35 +124,41 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 		if (_changedValues.containsKey("items")) {
 			String _items = _changedValues.get("items");
 			String[] _data = _items.split(",");
-			if (itemStatus == null || itemStatus.size() == 0) {
-				for (int i = 0; i < _data.length; i++) {
-					itemStatus.put(i, false);
-				}
-			}
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_list_item_multiple_choice, _data);
 			spinnerDialog.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
-			spinnerDialog.setSelection(itemStatus, true);
+			try {
+				setSelection(model.getPropertyValue("indexs"));
+			} catch (Exception _err) {
+				DoServiceContainer.getLogEngine().writeError(model.getTypeID() + " indexs \n\t", _err);
+			}
 		}
 
 		if (_changedValues.containsKey("indexs")) {
-			if (itemStatus != null && itemStatus.size() > 0) {
-				for (int i = 0; i < itemStatus.size(); i++) {
-					itemStatus.put(i, false);
+			setSelection(_changedValues.get("indexs"));
+		}
+	}
+
+	private void setSelection(String _indexStr) {
+		if (itemStatus != null && itemStatus.size() > 0) {
+			for (int i = 0; i < itemStatus.size(); i++) {
+				itemStatus.put(i, false);
+			}
+		}
+
+		String[] _indexs = _indexStr.split(",");
+		if (_indexs != null && _indexs.length > 0) {
+			for (int i = 0; i < _indexs.length; i++) {
+				int _index = DoTextHelper.strToInt(_indexs[i], -1);
+				if (mAdapter != null && _index >= 0 && _index < mAdapter.getCount()) {
+					itemStatus.put(_index, true);
 				}
 			}
-			
-			String[] _indexs = _changedValues.get("indexs").split(",");
-			if (_indexs != null && _indexs.length > 0) {
-				for (int i = 0; i < _indexs.length; i++) {
-					int _index = DoTextHelper.strToInt(_indexs[i], -1);
-					if (mAdapter != null && _index >= 0 && _index < mAdapter.getCount()) {
-						itemStatus.put(_index, true);
-					}
-				}
+			if (mAdapter != null) {
 				spinnerDialog.setSelection(itemStatus, true);
 			}
 		}
+
 	}
 
 	private class MyAdapter extends ArrayAdapter<String> {
