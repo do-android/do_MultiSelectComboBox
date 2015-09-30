@@ -25,5 +25,6 @@ public abstract class do_MultiSelectComboBox_MAbstract extends DoUIModule{
 		this.registProperty(new DoProperty("indexs", PropertyDataType.String, "", false));
 		this.registProperty(new DoProperty("items", PropertyDataType.String, "", false));
 		this.registProperty(new DoProperty("textFlag", PropertyDataType.String, "normal", true));
+		this.registProperty(new DoProperty("textAlign", PropertyDataType.String, "left", true));
 	}
 }
