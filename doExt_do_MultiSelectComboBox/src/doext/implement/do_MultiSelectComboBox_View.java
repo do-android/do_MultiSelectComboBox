@@ -70,6 +70,7 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	@Override
 	public void loadView(DoUIModule _doUIModule) throws Exception {
 		this.model = (do_MultiSelectComboBox_MAbstract) _doUIModule;
+		this.setTextSize(TypedValue.COMPLEX_UNIT_PX, DoUIModuleHelper.getDeviceFontSize(_doUIModule, "17"));
 		itemStatus = new SparseBooleanArray();
 		spinnerDialog = new DoSpinnerDialog(context, itemStatus);
 		spinnerDialog.setOnClickCancelListener(this);
