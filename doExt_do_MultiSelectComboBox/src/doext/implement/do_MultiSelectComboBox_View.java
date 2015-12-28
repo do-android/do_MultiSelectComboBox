@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -96,11 +97,11 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	public void onPropertiesChanged(Map<String, String> _changedValues) {
 		DoUIModuleHelper.handleBasicViewProperChanged(this.model, _changedValues);
 		DoUIModuleHelper.setFontProperty(this.model, _changedValues);
-		
+
 		if (_changedValues.containsKey("textAlign")) {
 			this.textAlign = _changedValues.get("textAlign");
 		}
-		
+
 		if (_changedValues.containsKey("fontStyle")) {
 			this.fontStyle = _changedValues.get("fontStyle");
 			if (mAdapter != null) {
@@ -131,7 +132,10 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 
 		if (_changedValues.containsKey("items")) {
 			String _items = _changedValues.get("items");
-			String[] _data = _items.split(",");
+			String[] _data = new String[0];
+			if (!TextUtils.isEmpty(_items)) {
+				_data = _items.split(",");
+			}
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_list_item_multiple_choice, _data);
 			spinnerDialog.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
