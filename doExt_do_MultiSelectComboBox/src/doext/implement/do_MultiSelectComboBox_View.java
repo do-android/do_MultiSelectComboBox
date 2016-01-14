@@ -18,11 +18,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import core.DoServiceContainer;
+import core.helper.DoJsonHelper;
+import core.helper.DoScriptEngineHelper;
 import core.helper.DoTextHelper;
 import core.helper.DoUIModuleHelper;
+import core.interfaces.DoIListData;
 import core.interfaces.DoIScriptEngine;
 import core.interfaces.DoIUIModuleView;
 import core.object.DoInvokeResult;
+import core.object.DoMultitonModule;
 import core.object.DoProperty;
 import core.object.DoUIModule;
 import doext.define.do_MultiSelectComboBox_IMethod;
@@ -217,8 +221,47 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	 */
 	@Override
 	public boolean invokeSyncMethod(String _methodName, JSONObject _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
-		// ...do something
+		if ("bindItems".equals(_methodName)) {
+			bindItems(_dictParas, _scriptEngine, _invokeResult);
+			return true;
+		}
+		if ("refreshItems".equals(_methodName)) {
+			refreshItems(_dictParas, _scriptEngine, _invokeResult);
+			return true;
+		}
 		return false;
+	}
+
+	private void bindItems(JSONObject _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
+		String _address = DoJsonHelper.getString(_dictParas, "data", "");
+		if (_address == null || _address.length() <= 0)
+			throw new Exception("doListView 未指定相关的listview data参数！");
+		DoMultitonModule _multitonModule = DoScriptEngineHelper.parseMultitonModule(_scriptEngine, _address);
+		if (_multitonModule == null)
+			throw new Exception("doListView data参数无效！");
+		if (_multitonModule instanceof DoIListData) {
+			DoIListData _data = (DoIListData) _multitonModule;
+			int _count = _data.getCount();
+			String[] _newData = new String[_count];
+			for (int i = 0; i < _count; i++) {
+				_newData[i] = _data.getData(i).toString();
+			}
+
+			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_list_item_multiple_choice, _newData);
+			spinnerDialog.setAdapter(mAdapter);
+			mAdapter.notifyDataSetChanged();
+			try {
+				setSelection(model.getPropertyValue("indexs"));
+			} catch (Exception _err) {
+				DoServiceContainer.getLogEngine().writeError(model.getTypeID() + " indexs \n\t", _err);
+			}
+		}
+	}
+
+	private void refreshItems(JSONObject _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) {
+		if (null != mAdapter) {
+			mAdapter.notifyDataSetChanged();
+		}
 	}
 
 	/**
