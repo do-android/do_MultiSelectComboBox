@@ -15,14 +15,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import core.DoServiceContainer;
 import core.helper.DoJsonHelper;
+import core.helper.DoResourcesHelper;
 import core.helper.DoScriptEngineHelper;
 import core.helper.DoTextHelper;
 import core.helper.DoUIModuleHelper;
 import core.interfaces.DoIListData;
+import core.interfaces.DoIModuleTypeID;
 import core.interfaces.DoIScriptEngine;
 import core.interfaces.DoIUIModuleView;
 import core.object.DoInvokeResult;
@@ -40,7 +42,7 @@ import doext.implement.DoSpinnerDialog.OnClickCancelListener;
  * 参数解释：@_messageName字符串事件名称，@jsonResult传递事件参数对象； 获取DoInvokeResult对象方式new
  * DoInvokeResult(this.model.getUniqueKey());
  */
-public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleView, do_MultiSelectComboBox_IMethod, OnClickCancelListener, OnClickListener {
+public class do_MultiSelectComboBox_View extends RelativeLayout implements DoIUIModuleView, do_MultiSelectComboBox_IMethod, OnClickCancelListener, OnClickListener, DoIModuleTypeID {
 
 	private ArrayAdapter<String> mAdapter;
 	private String fontStyle;
@@ -54,6 +56,8 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	private DoSpinnerDialog spinnerDialog;
 
 	private Context context;
+
+	private TextView mTextView;
 	/**
 	 * 每个UIview都会引用一个具体的model实例；
 	 */
@@ -64,18 +68,35 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 		this.context = context;
 	}
 
-	@Override
-	public void setText(CharSequence text, BufferType type) {
-		super.setText(text + "    ▼", type);
-	}
-
 	/**
 	 * 初始化加载view准备,_doUIModule是对应当前UIView的model实例
 	 */
 	@Override
 	public void loadView(DoUIModule _doUIModule) throws Exception {
 		this.model = (do_MultiSelectComboBox_MAbstract) _doUIModule;
-		this.setTextSize(TypedValue.COMPLEX_UNIT_PX, DoUIModuleHelper.getDeviceFontSize(_doUIModule, "17"));
+
+		mTextView = new TextView(context);
+		mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, DoUIModuleHelper.getDeviceFontSize(_doUIModule, "17"));
+		mTextView.setTextColor(Color.BLACK);
+		RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(-1, -2);
+		tvParams.leftMargin = 5;
+		tvParams.addRule(CENTER_VERTICAL);
+		this.addView(mTextView, tvParams);
+
+		View rigthView = new View(context);
+		tvParams = new RelativeLayout.LayoutParams((int) (_doUIModule.getRealHeight() / 3), (int) (_doUIModule.getRealHeight() / 3));
+		tvParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		tvParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		int do_multiselect_combobox_flag_id = DoResourcesHelper.getIdentifier("do_multiselect_combobox_flag", "drawable", this);
+		rigthView.setBackgroundResource(do_multiselect_combobox_flag_id);
+		this.addView(rigthView, tvParams);
+
+		View lineView = new View(context);
+		lineView.setBackgroundColor(Color.GRAY);
+		tvParams = new RelativeLayout.LayoutParams(-1, 2);
+		tvParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		this.addView(lineView, tvParams);
+
 		itemStatus = new SparseBooleanArray();
 		spinnerDialog = new DoSpinnerDialog(context, itemStatus);
 		spinnerDialog.setOnClickCancelListener(this);
@@ -100,7 +121,7 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 	@Override
 	public void onPropertiesChanged(Map<String, String> _changedValues) {
 		DoUIModuleHelper.handleBasicViewProperChanged(this.model, _changedValues);
-		DoUIModuleHelper.setFontProperty(this.model, _changedValues);
+		DoUIModuleHelper.setFontProperty(this.model, mTextView, _changedValues);
 
 		if (_changedValues.containsKey("textAlign")) {
 			this.textAlign = _changedValues.get("textAlign");
@@ -344,6 +365,11 @@ public class do_MultiSelectComboBox_View extends Button implements DoIUIModuleVi
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public String getTypeID() {
+		return model.getTypeID();
 	}
 
 }

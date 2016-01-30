@@ -100,4 +100,10 @@ public class DoScriptEngine implements DoIScriptEngine {
         this.dictCallBack.put(_eventID, _eventCallBack);
     }
 
+	@Override
+	public void callLoadScriptsAsModel() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

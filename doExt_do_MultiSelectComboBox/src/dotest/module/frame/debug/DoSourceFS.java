@@ -86,4 +86,10 @@ public class DoSourceFS implements DoISourceFS {
 		return this.rootPath + "/" + _related_url;
 	}
 
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

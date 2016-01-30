@@ -135,4 +135,22 @@ public class DoPage implements DoIPage {
 		return false;
 	}
 
+	@Override
+	public int getDesignScreenHeight() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getDesignScreenWidth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setDesignScreenResolution(int arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

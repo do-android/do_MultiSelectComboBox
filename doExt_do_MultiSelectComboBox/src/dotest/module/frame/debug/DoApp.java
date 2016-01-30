@@ -2,7 +2,6 @@ package dotest.module.frame.debug;
 
 import android.content.Context;
 import core.interfaces.DoIApp;
-import core.interfaces.DoIConfig;
 import core.interfaces.DoIDataFS;
 import core.interfaces.DoIScriptEngine;
 import core.interfaces.DoISourceFS;
@@ -42,18 +41,6 @@ public class DoApp implements DoIApp{
 	public String getAppID() {
 		// TODO Auto-generated method stub
 		return "dotest";
-	}
-
-	@Override
-	public DoIConfig getConfig() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DoIConfig getConfig(String arg0) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

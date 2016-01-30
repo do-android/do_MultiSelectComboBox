@@ -47,7 +47,7 @@ public class DoSpinnerDialog extends Dialog implements OnClickListener, OnCancel
 		LinearLayout layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
 		TextView textView = new TextView(context);
-		textView.setPadding(0, px2dip(getContext(), 80), 0, px2dip(getContext(), 50));
+		textView.setPadding(0, 15, 0, 10);
 		textView.setText("完成");
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 		textView.setTextColor(Color.BLACK);
@@ -100,11 +100,6 @@ public class DoSpinnerDialog extends Dialog implements OnClickListener, OnCancel
 			tempItemStatus.clear();
 			listener.clickCancel(itemStatus);
 		}
-	}
-
-	private int px2dip(Context context, float pxValue) {
-		final float scale = context.getResources().getDisplayMetrics().density;
-		return (int) (pxValue / scale + 0.5f);
 	}
 
 	public void setSelection(SparseBooleanArray _itemStatus, boolean _isFire) {
