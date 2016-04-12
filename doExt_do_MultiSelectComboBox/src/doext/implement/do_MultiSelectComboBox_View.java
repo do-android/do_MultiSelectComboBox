@@ -256,10 +256,10 @@ public class do_MultiSelectComboBox_View extends RelativeLayout implements DoIUI
 	private void bindItems(JSONObject _dictParas, DoIScriptEngine _scriptEngine, DoInvokeResult _invokeResult) throws Exception {
 		String _address = DoJsonHelper.getString(_dictParas, "data", "");
 		if (_address == null || _address.length() <= 0)
-			throw new Exception("doListView 未指定相关的listview data参数！");
+			throw new Exception("do_MultiSelectComboBox_View 未指定相关的listview data参数！");
 		DoMultitonModule _multitonModule = DoScriptEngineHelper.parseMultitonModule(_scriptEngine, _address);
 		if (_multitonModule == null)
-			throw new Exception("doListView data参数无效！");
+			throw new Exception("do_MultiSelectComboBox_View data参数无效！");
 		if (_multitonModule instanceof DoIListData) {
 			DoIListData _data = (DoIListData) _multitonModule;
 			int _count = _data.getCount();
