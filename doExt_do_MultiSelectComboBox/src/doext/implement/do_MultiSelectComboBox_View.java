@@ -265,7 +265,12 @@ public class do_MultiSelectComboBox_View extends RelativeLayout implements DoIUI
 			int _count = _data.getCount();
 			String[] _newData = new String[_count];
 			for (int i = 0; i < _count; i++) {
-				_newData[i] = _data.getData(i).toString();
+				Object _childData = _data.getData(i);
+				if (_childData instanceof JSONObject) {
+					_newData[i] = DoJsonHelper.getString((JSONObject) _childData, "text", "");
+				} else {
+					_newData[i] = _childData.toString();
+				}
 			}
 
 			mAdapter = new MyAdapter(this.getContext(), android.R.layout.simple_list_item_multiple_choice, _newData);
